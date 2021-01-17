@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		656F7F7625B46AE000F470A8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 656F7F7525B46AE000F470A8 /* main.cpp */; };
+		656F7F7F25B46B6100F470A8 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 656F7F7E25B46B6100F470A8 /* OpenGL.framework */; };
+		656F7F8425B46C2F00F470A8 /* libGLEW.2.2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 656F7F8325B46C2F00F470A8 /* libGLEW.2.2.0.dylib */; };
+		656F7F8525B46C2F00F470A8 /* libGLEW.2.2.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 656F7F8325B46C2F00F470A8 /* libGLEW.2.2.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		656F7F8825B46C3D00F470A8 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 656F7F8725B46C3D00F470A8 /* libglfw.3.3.dylib */; };
+		656F7F8925B46C3D00F470A8 /* libglfw.3.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 656F7F8725B46C3D00F470A8 /* libglfw.3.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		656F7F8F25B46CF700F470A8 /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 656F7F8C25B46CF700F470A8 /* shader.cpp */; };
+		656F7F9325B46D6000F470A8 /* controls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 656F7F9125B46D6000F470A8 /* controls.cpp */; };
+		656F7F9E25B4985800F470A8 /* objloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 656F7F9C25B4985700F470A8 /* objloader.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -20,11 +28,35 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		656F7F8625B46C2F00F470A8 /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				656F7F8925B46C3D00F470A8 /* libglfw.3.3.dylib in Embed Libraries */,
+				656F7F8525B46C2F00F470A8 /* libGLEW.2.2.0.dylib in Embed Libraries */,
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		656F7F7225B46AE000F470A8 /* 3DProjectDead */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 3DProjectDead; sourceTree = BUILT_PRODUCTS_DIR; };
 		656F7F7525B46AE000F470A8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		656F7F7E25B46B6100F470A8 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		656F7F8325B46C2F00F470A8 /* libGLEW.2.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.2.0.dylib; path = ../../../../../../usr/local/Cellar/glew/2.2.0_1/lib/libGLEW.2.2.0.dylib; sourceTree = "<group>"; };
+		656F7F8725B46C3D00F470A8 /* libglfw.3.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.3.dylib; path = ../../../../../../usr/local/Cellar/glfw/3.3.2/lib/libglfw.3.3.dylib; sourceTree = "<group>"; };
+		656F7F8B25B46CF700F470A8 /* SimpleTransform.vertexshader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SimpleTransform.vertexshader; sourceTree = "<group>"; };
+		656F7F8C25B46CF700F470A8 /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shader.cpp; sourceTree = "<group>"; };
+		656F7F8D25B46CF700F470A8 /* shader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = shader.hpp; sourceTree = "<group>"; };
+		656F7F8E25B46CF700F470A8 /* SingleColor.fragmentshader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SingleColor.fragmentshader; sourceTree = "<group>"; };
+		656F7F9125B46D6000F470A8 /* controls.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controls.cpp; sourceTree = "<group>"; };
+		656F7F9225B46D6000F470A8 /* controls.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = controls.hpp; sourceTree = "<group>"; };
+		656F7F9C25B4985700F470A8 /* objloader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = objloader.cpp; sourceTree = "<group>"; };
+		656F7F9D25B4985800F470A8 /* objloader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = objloader.hpp; sourceTree = "<group>"; };
+		656F7F9F25B4998F00F470A8 /* bunny.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = bunny.obj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +64,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				656F7F8825B46C3D00F470A8 /* libglfw.3.3.dylib in Frameworks */,
+				656F7F7F25B46B6100F470A8 /* OpenGL.framework in Frameworks */,
+				656F7F8425B46C2F00F470A8 /* libGLEW.2.2.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +78,7 @@
 			children = (
 				656F7F7425B46AE000F470A8 /* 3DProjectDead */,
 				656F7F7325B46AE000F470A8 /* Products */,
+				656F7F7D25B46B6000F470A8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,9 +93,44 @@
 		656F7F7425B46AE000F470A8 /* 3DProjectDead */ = {
 			isa = PBXGroup;
 			children = (
+				656F7F9025B46D4800F470A8 /* common */,
+				656F7F8A25B46CE500F470A8 /* shader */,
 				656F7F7525B46AE000F470A8 /* main.cpp */,
 			);
 			path = 3DProjectDead;
+			sourceTree = "<group>";
+		};
+		656F7F7D25B46B6000F470A8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				656F7F8725B46C3D00F470A8 /* libglfw.3.3.dylib */,
+				656F7F8325B46C2F00F470A8 /* libGLEW.2.2.0.dylib */,
+				656F7F7E25B46B6100F470A8 /* OpenGL.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		656F7F8A25B46CE500F470A8 /* shader */ = {
+			isa = PBXGroup;
+			children = (
+				656F7F8C25B46CF700F470A8 /* shader.cpp */,
+				656F7F8D25B46CF700F470A8 /* shader.hpp */,
+				656F7F8B25B46CF700F470A8 /* SimpleTransform.vertexshader */,
+				656F7F8E25B46CF700F470A8 /* SingleColor.fragmentshader */,
+			);
+			path = shader;
+			sourceTree = "<group>";
+		};
+		656F7F9025B46D4800F470A8 /* common */ = {
+			isa = PBXGroup;
+			children = (
+				656F7F9F25B4998F00F470A8 /* bunny.obj */,
+				656F7F9C25B4985700F470A8 /* objloader.cpp */,
+				656F7F9D25B4985800F470A8 /* objloader.hpp */,
+				656F7F9125B46D6000F470A8 /* controls.cpp */,
+				656F7F9225B46D6000F470A8 /* controls.hpp */,
+			);
+			path = common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -72,6 +143,7 @@
 				656F7F6E25B46AE000F470A8 /* Sources */,
 				656F7F6F25B46AE000F470A8 /* Frameworks */,
 				656F7F7025B46AE000F470A8 /* CopyFiles */,
+				656F7F8625B46C2F00F470A8 /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -118,7 +190,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				656F7F9E25B4985800F470A8 /* objloader.cpp in Sources */,
+				656F7F8F25B46CF700F470A8 /* shader.cpp in Sources */,
 				656F7F7625B46AE000F470A8 /* main.cpp in Sources */,
+				656F7F9325B46D6000F470A8 /* controls.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,6 +315,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/lib,
+					/usr/local/Cellar/glew/2.2.0_1/lib,
+					/usr/local/Cellar/glfw/3.3.2/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -248,6 +329,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/lib,
+					/usr/local/Cellar/glew/2.2.0_1/lib,
+					/usr/local/Cellar/glfw/3.3.2/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
