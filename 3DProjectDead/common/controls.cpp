@@ -13,8 +13,7 @@ using namespace glm;
 
 glm::mat4 ViewMatrix;
 glm::mat4 ProjectionMatrix;
-// Initial position : on +Z
-glm::vec3 position = glm::vec3( 0, 0, 5 );
+glm::vec3 position = glm::vec3( 0, 0, 10 ); // Initial position of camera
 
 
 glm::vec3 getCameraPositionVector(){

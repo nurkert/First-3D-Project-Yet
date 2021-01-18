@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include <cmath>
 
 #include <GL/glew.h> // Always include GLEW before gl.h and glfw3.h, since it's a bit magic.
 
@@ -19,14 +20,13 @@ GLFWwindow* window;
 #include "objloader.hpp"
 //#include "texture/texture.cpp"
 
-int main(int argc, const char * argv[]) {
-   
+bool initializeWindow() {
     // Initialise GLFW
     if( !glfwInit() )
     {
         fprintf( stderr, "Failed to initialize GLFW\n" );
         getchar();
-        return -1;
+        return false;
     }
 
     glfwWindowHint(GLFW_SAMPLES, 4);
@@ -38,14 +38,14 @@ int main(int argc, const char * argv[]) {
     // Open a window and create its OpenGL context
     window = glfwCreateWindow( 1280, 720, "First-3D-Project-Yet", NULL, NULL );
     
-    // Set Limits for Window size
+    // Set minimum Limits for Window size
     glfwSetWindowSizeLimits( window, 534, 300, GLFW_DONT_CARE, GLFW_DONT_CARE );
     
     if( window == NULL ){
         fprintf( stderr, "Failed to open GLFW window.\n" );
         getchar();
         glfwTerminate();
-        return -1;
+        return false;
     }
     glfwMakeContextCurrent(window);
 
@@ -54,14 +54,11 @@ int main(int argc, const char * argv[]) {
         fprintf(stderr, "Failed to initialize GLEW\n");
         getchar();
         glfwTerminate();
-        return -1;
+        return false;
     }
 
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-
-    // black background color
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     
     // Cull triangles which normal is not towards the camera
     glEnable(GL_CULL_FACE);
@@ -70,82 +67,84 @@ int main(int argc, const char * argv[]) {
     // Accept fragment if it closer to the camera than the former one
     glDepthFunc(GL_LESS);
     
-    GLuint VertexArrayID;
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
-
-    // Create and compile our GLSL program from the shaders
-    GLuint programID = LoadShaders( "/Users/nikoburkert/Documents/Unity/First-3D-Project-Yet/3DProjectDead/shader/StandardShading.vertexshader", "/Users/nikoburkert/Documents/Unity/First-3D-Project-Yet/3DProjectDead/shader/StandardShading.fragmentshader" );
-
-    // Get a handle for our "MVP" uniform
-    GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-    GLuint ViewMatrixID = glGetUniformLocation(programID, "V");
-    GLuint ModelMatrixID = glGetUniformLocation(programID, "M");
+    // black background color
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     
-    // Read our .obj file
+    return true;
+}
+
+int vboID = 0;
+
+class VBO {
+    
+private:
+    int id;
+public:
+    
+    glm::mat4 modelMatrix;
+    
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> uvs;
     std::vector<glm::vec3> normals;
-    bool objOK = loadOBJ("/Users/nikoburkert/Documents/Unity/First-3D-Project-Yet/3DProjectDead/common/suzanne.obj", vertices, uvs, normals);
     
-    if (!objOK) {
-        fprintf(stderr, "Failed to load Object\n");
-        getchar();
-        glfwTerminate();
-        return -1;
+    GLuint VertexArrayID;
+    GLuint vertexbuffer;
+    GLuint uvbuffer;
+    GLuint normalbuffer;
+    
+    VBO() {
+        id = ++vboID;
+        modelMatrix = glm::mat4(1.0);
     }
     
-    // Load it into a VBO
-
-    GLuint vertexbuffer;
-    glGenBuffers(1, &vertexbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
-
-    GLuint uvbuffer;
-    glGenBuffers(1, &uvbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-    glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
-
-    GLuint normalbuffer;
-    glGenBuffers(1, &normalbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-    glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
-
-    // Get a handle for our "LightPosition" uniform
-    glUseProgram(programID);
-    GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
+    int getID() {
+        return id;
+    }
     
+    glm::mat4 getModelMatrix() {
+        return modelMatrix;
+    }
     
+    void translate(float x, float y, float z) {
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(x, y, z));
+    }
     
-    do{
-        // Clear the depth and color:
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    void scale(float x, float y, float z) {
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(x, y, z));
+    }
+    
+    void rotate(float x, float y, float z) {
+        modelMatrix = glm::rotate(modelMatrix, 0.01F, glm::vec3(x, y, z));
+    }
+    
+    void loadObj(const char *path) {
+        loadOBJ(path, vertices, uvs, normals);
+    }
+    
+    void genBuffers() {
+        // Load it into a VBO
 
-        // Use our shader
-        glUseProgram(programID);
-
-        // Compute the MVP matrix from keyboard and mouse input
-        computeMatricesFromInputs();
-        glm::mat4 ProjectionMatrix = getProjectionMatrix();
-        glm::mat4 ViewMatrix = getViewMatrix();
-        glm::mat4 ModelMatrix = glm::mat4(1.0);
-        glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+        glGenVertexArrays(id, &VertexArrayID);
+        glBindVertexArray(VertexArrayID);
         
+        glGenBuffers(id, &vertexbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+
+        glGenBuffers(id, &uvbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+        glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
+
+        glGenBuffers(id, &normalbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+        glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
+    }
+    
+    void handleVertexAttribArray() {
+        int idStart = (id - 1) * 3;
         
-        // Send our transformation to the currently bound shader,
-        // in the "MVP" uniform
-        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-        glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
-        glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
-
-//        glm::vec3 lightPos = glm::vec3(4,4,4);
-        glm::vec3 lightPos = getCameraPositionVector();
-        glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
-
-
         // 1rst attribute buffer : vertices
-        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(idStart + 0);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
         glVertexAttribPointer(
             0,                  // attribute
@@ -157,7 +156,7 @@ int main(int argc, const char * argv[]) {
         );
 
         // 2nd attribute buffer : UVs
-        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(idStart + 1);
         glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
         glVertexAttribPointer(
             1,                                // attribute
@@ -169,7 +168,7 @@ int main(int argc, const char * argv[]) {
         );
 
         // 3rd attribute buffer : normals
-        glEnableVertexAttribArray(2);
+        glEnableVertexAttribArray(idStart + 2);
         glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
         glVertexAttribPointer(
             2,                                // attribute
@@ -183,9 +182,79 @@ int main(int argc, const char * argv[]) {
         // Draw the triangles !
         glDrawArrays(GL_TRIANGLES, 0, vertices.size() );
 
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(idStart + 0);
+        glDisableVertexAttribArray(idStart + 1);
+        glDisableVertexAttribArray(idStart + 2);
+    }
+    
+    void cleanUp() {
+        glDeleteBuffers(id, &vertexbuffer);
+        glDeleteBuffers(id, &uvbuffer);
+        glDeleteBuffers(id, &normalbuffer);
+        glDeleteVertexArrays(id, &VertexArrayID);
+    }
+    
+};
+
+int main(int argc, const char * argv[]) {
+    
+    if(!initializeWindow())
+        return -1;
+
+    // Create and compile our GLSL program from the shaders
+    GLuint programID = LoadShaders( "/Users/nikoburkert/Documents/XCode/workspace/First-3D-Project-Yet/3DProjectDead/shader/StandardShading.vertexshader", "/Users/nikoburkert/Documents/XCode/workspace/First-3D-Project-Yet/3DProjectDead/shader/StandardShading.fragmentshader" );
+
+    // Get a handle for our "LightPosition" uniform
+    glUseProgram(programID);
+    GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
+    
+    // Get a handle for our "MVP" uniform
+    GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+    GLuint ViewMatrixID = glGetUniformLocation(programID, "V");
+    GLuint ModelMatrixID = glGetUniformLocation(programID, "M");
+
+    
+    VBO suzanne;
+    suzanne.loadObj("/Users/nikoburkert/Documents/XCode/workspace/First-3D-Project-Yet/3DProjectDead/common/suzanne.obj");
+    suzanne.genBuffers();
+    
+    // Animation loop
+    do{
+        // Clear the depth and color:
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // Use our shader
+        glUseProgram(programID);
+
+        // Compute the MVP matrix from keyboard and mouse input
+        computeMatricesFromInputs();
+        glm::mat4 ProjectionMatrix = getProjectionMatrix();
+        glm::mat4 ViewMatrix = getViewMatrix();
+
+        suzanne.rotate(0, glm::sin(glfwGetTime()*2.0f) /10, 0.1f);
+        
+
+        
+        //light flies around
+        glm::vec3 lightPos = glm::vec3(glm::sin(glfwGetTime()*2.0f) * 10,glm::cos(float(glfwGetTime()*3.3f)) * 10,glm::cos(glfwGetTime()*2.0f) * 10);
+        //        glm::vec3 lightPos = getCameraPositionVector();
+        glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
+        
+        
+        
+        glm::mat4 ModelMatrix = suzanne.getModelMatrix();
+        glm::scale(ModelMatrix, glm::vec3(1, 1, glm::sin(glfwGetTime())*1000.0f));
+        
+        glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+        
+        // Send our transformation to the currently bound shader,
+        // in the "MVP" uniform
+        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+        glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
+        glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
+
+        suzanne.handleVertexAttribArray();
+        
 
         
         // Swap buffers
@@ -195,14 +264,15 @@ int main(int argc, const char * argv[]) {
     } while(glfwWindowShouldClose(window) == 0);
 
     // Cleanup VBO and shader
-    glDeleteBuffers(1, &vertexbuffer);
-    glDeleteBuffers(1, &uvbuffer);
-    glDeleteBuffers(1, &normalbuffer);
+    suzanne.cleanUp();
+    
     glDeleteProgram(programID);
-    glDeleteVertexArrays(1, &VertexArrayID);
     
     // Close OpenGL window and terminate GLFW
     glfwTerminate();
 
     return 0;
 }
+
+
+
