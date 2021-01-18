@@ -48,15 +48,15 @@
 		656F7F7E25B46B6100F470A8 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		656F7F8325B46C2F00F470A8 /* libGLEW.2.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.2.0.dylib; path = ../../../../../../usr/local/Cellar/glew/2.2.0_1/lib/libGLEW.2.2.0.dylib; sourceTree = "<group>"; };
 		656F7F8725B46C3D00F470A8 /* libglfw.3.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.3.dylib; path = ../../../../../../usr/local/Cellar/glfw/3.3.2/lib/libglfw.3.3.dylib; sourceTree = "<group>"; };
-		656F7F8B25B46CF700F470A8 /* SimpleTransform.vertexshader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SimpleTransform.vertexshader; sourceTree = "<group>"; };
 		656F7F8C25B46CF700F470A8 /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shader.cpp; sourceTree = "<group>"; };
 		656F7F8D25B46CF700F470A8 /* shader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = shader.hpp; sourceTree = "<group>"; };
-		656F7F8E25B46CF700F470A8 /* SingleColor.fragmentshader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SingleColor.fragmentshader; sourceTree = "<group>"; };
 		656F7F9125B46D6000F470A8 /* controls.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controls.cpp; sourceTree = "<group>"; };
 		656F7F9225B46D6000F470A8 /* controls.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = controls.hpp; sourceTree = "<group>"; };
 		656F7F9C25B4985700F470A8 /* objloader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = objloader.cpp; sourceTree = "<group>"; };
 		656F7F9D25B4985800F470A8 /* objloader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = objloader.hpp; sourceTree = "<group>"; };
-		656F7F9F25B4998F00F470A8 /* bunny.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = bunny.obj; sourceTree = "<group>"; };
+		65E53D3125B4E0EC00D983D5 /* suzanne.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = suzanne.obj; sourceTree = "<group>"; };
+		65E53D3225B5841600D983D5 /* StandardShading.vertexshader */ = {isa = PBXFileReference; lastKnownFileType = text; path = StandardShading.vertexshader; sourceTree = "<group>"; };
+		65E53D3325B5841600D983D5 /* StandardShading.fragmentshader */ = {isa = PBXFileReference; lastKnownFileType = text; path = StandardShading.fragmentshader; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,8 +115,8 @@
 			children = (
 				656F7F8C25B46CF700F470A8 /* shader.cpp */,
 				656F7F8D25B46CF700F470A8 /* shader.hpp */,
-				656F7F8B25B46CF700F470A8 /* SimpleTransform.vertexshader */,
-				656F7F8E25B46CF700F470A8 /* SingleColor.fragmentshader */,
+				65E53D3325B5841600D983D5 /* StandardShading.fragmentshader */,
+				65E53D3225B5841600D983D5 /* StandardShading.vertexshader */,
 			);
 			path = shader;
 			sourceTree = "<group>";
@@ -124,7 +124,7 @@
 		656F7F9025B46D4800F470A8 /* common */ = {
 			isa = PBXGroup;
 			children = (
-				656F7F9F25B4998F00F470A8 /* bunny.obj */,
+				65E53D3125B4E0EC00D983D5 /* suzanne.obj */,
 				656F7F9C25B4985700F470A8 /* objloader.cpp */,
 				656F7F9D25B4985800F470A8 /* objloader.hpp */,
 				656F7F9125B46D6000F470A8 /* controls.cpp */,
