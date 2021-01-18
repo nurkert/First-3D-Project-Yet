@@ -80,6 +80,7 @@ class VBO {
 private:
     //int id;
 public:
+    glm::vec3 color;
     
     glm::mat4 modelMatrix;
     
@@ -93,7 +94,16 @@ public:
     GLuint normalbuffer;
     
     VBO() {
+        color = glm::vec3(0.5,0.5,0.5);
         modelMatrix = glm::mat4(1.0);
+    }
+    
+    void setColor(float r, float g, float b) {
+        color = glm::vec3(r,g,b);
+    }
+    
+    glm::vec3 getAmbientColor() {
+        return color;
     }
     
     glm::mat4 getModelMatrix() {
@@ -181,7 +191,7 @@ int main(int argc, const char * argv[]) {
     glUseProgram(programID);
     GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
     
-    
+    GLuint ColorID = glGetUniformLocation(programID, "AbientColor");
     
     // Get a handle for our "MVP" uniform
     GLuint MatrixID = glGetUniformLocation(programID, "MVP");
@@ -191,13 +201,16 @@ int main(int argc, const char * argv[]) {
     std::vector<VBO*> vbos;
     
     VBO cube;
-    cube.loadObj("/Users/nikoburkert/Documents/XCode/workspace/First-3D-Project-Yet/3DProjectDead/common/cube.obj");
+    cube.loadObj("/Users/nikoburkert/Documents/XCode/workspace/First-3D-Project-Yet/3DProjectDead/objects/cube.obj");
+    cube.setColor(1, 1, 1);
     vbos.push_back(&cube);
     
     VBO suzanne;
     suzanne.translate(0, 2, 0);
-    suzanne.loadObj("/Users/nikoburkert/Documents/XCode/workspace/First-3D-Project-Yet/3DProjectDead/common/suzanne.obj");
+    suzanne.setColor(0.396f, 0.262, 0.129); // set suzanne color to brown
+    suzanne.loadObj("/Users/nikoburkert/Documents/XCode/workspace/First-3D-Project-Yet/3DProjectDead/objects/suzanne.obj");
     vbos.push_back(&suzanne);
+
     
     
     for(VBO* vbo : vbos) {
@@ -207,6 +220,16 @@ int main(int argc, const char * argv[]) {
     
     // Animation loop
     do{
+        
+        //handle vbos
+        //glm::lookAt(<#const vec<3, T, Q> &eye#>, <#const vec<3, T, Q> &center#>, <#const vec<3, T, Q> &up#>)
+        
+        //suzanne.rotate(0, glm::sin(glfwGetTime()*2.0f) /100, glm::sin(glfwGetTime()*3.03f) /100);
+              
+              
+              
+        
+        
         // Clear the depth and color:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -218,18 +241,18 @@ int main(int argc, const char * argv[]) {
         glm::mat4 ProjectionMatrix = getProjectionMatrix();
         glm::mat4 ViewMatrix = getViewMatrix();
 
-        //light flies around
-//        glm::vec3 lightPos = glm::vec3(glm::sin(glfwGetTime()*2.0f) * 10,glm::cos(float(glfwGetTime()*3.3f)) * 10,glm::cos(glfwGetTime()*2.0f) * 10);
+        // camera radiates the light
         glm::vec3 lightPos = getCameraPositionVector();
         glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
-  
-        suzanne.rotate(0, glm::sin(glfwGetTime()*2.0f) /100, glm::sin(glfwGetTime()*3.03f) /100);
-        
+
         // draw all vbos
         for(VBO* vbo : vbos) {
+            glm::vec3 ambientColor = vbo->getAmbientColor();
+            glUniform3f(ColorID, ambientColor.x, ambientColor.y, ambientColor.z); //xyz = rgb
+            
             glm::mat4 ModelMatrix = vbo->getModelMatrix();
             glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-            
+   
             // Send our transformation to the currently bound shader,
             // in the "MVP" uniform
             glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
