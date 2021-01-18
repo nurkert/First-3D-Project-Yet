@@ -57,6 +57,7 @@
 		65E53D3125B4E0EC00D983D5 /* suzanne.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = suzanne.obj; sourceTree = "<group>"; };
 		65E53D3225B5841600D983D5 /* StandardShading.vertexshader */ = {isa = PBXFileReference; lastKnownFileType = text; path = StandardShading.vertexshader; sourceTree = "<group>"; };
 		65E53D3325B5841600D983D5 /* StandardShading.fragmentshader */ = {isa = PBXFileReference; lastKnownFileType = text; path = StandardShading.fragmentshader; sourceTree = "<group>"; };
+		65E53D4525B5D7BB00D983D5 /* cube.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube.obj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +125,7 @@
 		656F7F9025B46D4800F470A8 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				65E53D4525B5D7BB00D983D5 /* cube.obj */,
 				65E53D3125B4E0EC00D983D5 /* suzanne.obj */,
 				656F7F9C25B4985700F470A8 /* objloader.cpp */,
 				656F7F9D25B4985800F470A8 /* objloader.hpp */,

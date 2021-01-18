@@ -78,7 +78,7 @@ int vboID = 0;
 class VBO {
     
 private:
-    int id;
+    //int id;
 public:
     
     glm::mat4 modelMatrix;
@@ -93,12 +93,7 @@ public:
     GLuint normalbuffer;
     
     VBO() {
-        id = ++vboID;
         modelMatrix = glm::mat4(1.0);
-    }
-    
-    int getID() {
-        return id;
     }
     
     glm::mat4 getModelMatrix() {
@@ -124,74 +119,52 @@ public:
     void genBuffers() {
         // Load it into a VBO
 
-        glGenVertexArrays(id, &VertexArrayID);
+        glGenVertexArrays(1, &VertexArrayID);
         glBindVertexArray(VertexArrayID);
         
-        glGenBuffers(id, &vertexbuffer);
+        glGenBuffers(1, &vertexbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
 
-        glGenBuffers(id, &uvbuffer);
+        glGenBuffers(1, &uvbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
         glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 
-        glGenBuffers(id, &normalbuffer);
+        glGenBuffers(1, &normalbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
         glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
     }
     
     void handleVertexAttribArray() {
-        int idStart = (id - 1) * 3;
         
         // 1rst attribute buffer : vertices
-        glEnableVertexAttribArray(idStart + 0);
+        glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glVertexAttribPointer(
-            0,                  // attribute
-            3,                  // size
-            GL_FLOAT,           // type
-            GL_FALSE,           // normalized?
-            0,                  // stride
-            (void*)0            // array buffer offset
-        );
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0); // attribute, size, type, normalized?, stride, array buffer offset
 
         // 2nd attribute buffer : UVs
-        glEnableVertexAttribArray(idStart + 1);
+        glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-        glVertexAttribPointer(
-            1,                                // attribute
-            2,                                // size
-            GL_FLOAT,                         // type
-            GL_FALSE,                         // normalized?
-            0,                                // stride
-            (void*)0                          // array buffer offset
-        );
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0); // attribute, size, type, normalized?, stride, array buffer offset
 
         // 3rd attribute buffer : normals
-        glEnableVertexAttribArray(idStart + 2);
+        glEnableVertexAttribArray(2);
         glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-        glVertexAttribPointer(
-            2,                                // attribute
-            3,                                // size
-            GL_FLOAT,                         // type
-            GL_FALSE,                         // normalized?
-            0,                                // stride
-            (void*)0                          // array buffer offset
-        );
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0); // attribute, size, type, normalized?, stride, array buffer offset
 
         // Draw the triangles !
         glDrawArrays(GL_TRIANGLES, 0, vertices.size() );
 
-        glDisableVertexAttribArray(idStart + 0);
-        glDisableVertexAttribArray(idStart + 1);
-        glDisableVertexAttribArray(idStart + 2);
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
     }
     
     void cleanUp() {
-        glDeleteBuffers(id, &vertexbuffer);
-        glDeleteBuffers(id, &uvbuffer);
-        glDeleteBuffers(id, &normalbuffer);
-        glDeleteVertexArrays(id, &VertexArrayID);
+        glDeleteBuffers(1, &vertexbuffer);
+        glDeleteBuffers(1, &uvbuffer);
+        glDeleteBuffers(1, &normalbuffer);
+        glDeleteVertexArrays(1, &VertexArrayID);
     }
     
 };
@@ -208,15 +181,29 @@ int main(int argc, const char * argv[]) {
     glUseProgram(programID);
     GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
     
+    
+    
     // Get a handle for our "MVP" uniform
     GLuint MatrixID = glGetUniformLocation(programID, "MVP");
     GLuint ViewMatrixID = glGetUniformLocation(programID, "V");
     GLuint ModelMatrixID = glGetUniformLocation(programID, "M");
 
+    std::vector<VBO*> vbos;
+    
+    VBO cube;
+    cube.loadObj("/Users/nikoburkert/Documents/XCode/workspace/First-3D-Project-Yet/3DProjectDead/common/cube.obj");
+    vbos.push_back(&cube);
     
     VBO suzanne;
+    suzanne.translate(0, 2, 0);
     suzanne.loadObj("/Users/nikoburkert/Documents/XCode/workspace/First-3D-Project-Yet/3DProjectDead/common/suzanne.obj");
-    suzanne.genBuffers();
+    vbos.push_back(&suzanne);
+    
+    
+    for(VBO* vbo : vbos) {
+        vbo->genBuffers();
+        std::cout << "hallo";
+    }
     
     // Animation loop
     do{
@@ -231,32 +218,27 @@ int main(int argc, const char * argv[]) {
         glm::mat4 ProjectionMatrix = getProjectionMatrix();
         glm::mat4 ViewMatrix = getViewMatrix();
 
-        suzanne.rotate(0, glm::sin(glfwGetTime()*2.0f) /10, 0.1f);
-        
-
-        
         //light flies around
-        glm::vec3 lightPos = glm::vec3(glm::sin(glfwGetTime()*2.0f) * 10,glm::cos(float(glfwGetTime()*3.3f)) * 10,glm::cos(glfwGetTime()*2.0f) * 10);
-        //        glm::vec3 lightPos = getCameraPositionVector();
+//        glm::vec3 lightPos = glm::vec3(glm::sin(glfwGetTime()*2.0f) * 10,glm::cos(float(glfwGetTime()*3.3f)) * 10,glm::cos(glfwGetTime()*2.0f) * 10);
+        glm::vec3 lightPos = getCameraPositionVector();
         glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
+  
+        suzanne.rotate(0, glm::sin(glfwGetTime()*2.0f) /100, glm::sin(glfwGetTime()*3.03f) /100);
         
-        
-        
-        glm::mat4 ModelMatrix = suzanne.getModelMatrix();
-        glm::scale(ModelMatrix, glm::vec3(1, 1, glm::sin(glfwGetTime())*1000.0f));
-        
-        glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-        
-        // Send our transformation to the currently bound shader,
-        // in the "MVP" uniform
-        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-        glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
-        glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
+        // draw all vbos
+        for(VBO* vbo : vbos) {
+            glm::mat4 ModelMatrix = vbo->getModelMatrix();
+            glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+            
+            // Send our transformation to the currently bound shader,
+            // in the "MVP" uniform
+            glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+            glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
+            glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
 
-        suzanne.handleVertexAttribArray();
-        
+            vbo->handleVertexAttribArray();
+        }
 
-        
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -264,7 +246,9 @@ int main(int argc, const char * argv[]) {
     } while(glfwWindowShouldClose(window) == 0);
 
     // Cleanup VBO and shader
-    suzanne.cleanUp();
+    for(VBO* vbo : vbos) {
+        vbo->cleanUp();
+    }
     
     glDeleteProgram(programID);
     
